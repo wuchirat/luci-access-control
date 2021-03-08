@@ -125,12 +125,19 @@ local s_rule = mr:section(TypedSection, "rule", translate("Client Rules"))
 
 -----------------------------------------------------------        
     function validate_time(self, value, section)
-        local hh, mm
+        local hh, mm, ch
         hh,mm = string.match (value, "^(%d?%d):(%d%d)$")
         hh = tonumber (hh)
         mm = tonumber (mm)
-        if hh and mm and hh <= 23 and mm <= 59 then
-            return value
+		if hh and hh > 0 then
+			ch = hh -8 -- Need change Time Zone to utc
+		else
+			ch = hh + 24
+		end
+        --if hh and mm and hh <= 23 and mm <= 59 then
+        if ch and mm and mm <= 59 then
+           -- return value
+		   return string.format("%s:%s", ch, mm)
         else
             return nil, translate("Time value must be HH:MM or empty")
         end
